@@ -67,23 +67,19 @@ d3.csv('../data/mvp_race_2024.csv')
         let processedData = [];
         data.forEach(function(d) {
             d.TeamColor = teamColors[d.Team];
-            // If this player is already in processedData, check the date of their last entry
             let playerData = processedData.find(p => p.Player === d.Player);
             if (playerData) {
                 let lastDate = new Date(playerData.values[playerData.values.length - 1].ScrapeDate);
                 let currentDate = new Date(d.ScrapeDate);
-                // If the last date is not the day before the current date, add 'null' entries for the missing dates
                 lastDate.setDate(lastDate.getDate() + 1);
                 while (lastDate < currentDate) {
                     playerData.values.push({ScrapeDate: new Date(lastDate), Prob: null});
                     lastDate.setDate(lastDate.getDate() + 1);
                 }
             } else {
-                // If this player is not in processedData yet, add them
                 processedData.push({Player: d.Player, values: []});
                 playerData = processedData[processedData.length - 1];
             }
-            // Add the current data point
             playerData.values.push({ScrapeDate: new Date(d.ScrapeDate), Prob: d.Prob});
         });
 
@@ -183,7 +179,7 @@ d3.csv('../data/mvp_race_2024.csv')
             .attr("stroke-width", '1px')
             .attr("pointer-event", 'none')
         
-        // Add mouseover and mouseout events to the SVG
+        // Mouse events
         overlay_rect
             .on('mousemove', function() {
                 mousex = d3.pointer(this);
@@ -197,8 +193,6 @@ d3.csv('../data/mvp_race_2024.csv')
                 mousex = mousex[0] + 5;
                 hoverLine.style("display", 'none')
             });
-        
-        // Add event listeners for mouse movements to the entire SVG container
             
         
         main.selectAll('myLabels')

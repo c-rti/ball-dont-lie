@@ -40,7 +40,6 @@ if os.path.isfile(file_name) and os.path.getsize(file_name) > 0:
     all_players = existing_data['Player'].unique().tolist()
     
     # Check if the players in all_players are in the current top 5
-    
     mvp_race.to_csv(file_name, mode='a', header=False, index=False)
 else:
     mvp_race.to_csv(file_name, index=False)
