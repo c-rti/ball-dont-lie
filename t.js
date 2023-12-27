@@ -6,19 +6,28 @@ d3.csv('../data/mvp_race_2024.csv').then(function(data) {
         d.ScrapeDate = new Date(d.ScrapeDate);
     });
 
-    // Group the data by player
-    let dataByPlayer = d3.group(data, d => d.Player);
+    // Find the most recent date
+    let mostRecentDate = new Date(Math.max.apply(null, data.map(d => d.ScrapeDate)));
 
-    // For each player, find the record with the latest date
+    // Filter the data to only include records from the most recent date
+    let dataMostRecent = data.filter(d => {
+        let date = new Date(d.ScrapeDate);
+        return date.getTime() === mostRecentDate.getTime();
+    });
+
+    // Group the data by player
+    let dataByPlayer = d3.group(dataMostRecent, d => d.Player);
+
+    // For each player, find the record with the highest 'Prob%'
     let latestData = Array.from(dataByPlayer, ([player, records]) => {
-        return records.reduce((a, b) => a.ScrapeDate > b.ScrapeDate ? a : b);
+        return records.reduce((a, b) => a['Prob%'] > b['Prob%'] ? a : b);
     });
 
     // Sort the data by the 'Prob%' field in descending order
     latestData.sort((a, b) => d3.descending(a['Prob%'], b['Prob%']));
 
     // Select the top players
-    let topPlayers = latestData.slice(0, 10);
+    let topPlayers = latestData.slice(0, 5);
 
     // Create a table
     let table = d3.select('body').append('table')
@@ -28,7 +37,7 @@ d3.csv('../data/mvp_race_2024.csv').then(function(data) {
     let thead = table.append('thead');
     thead.append('tr')
         .selectAll('th')
-        .data(['Test', 'Prob%'])
+        .data(['Player', 'Prob%'])
         .enter()
         .append('th')
         .text(d => d)
@@ -45,7 +54,7 @@ d3.csv('../data/mvp_race_2024.csv').then(function(data) {
 
     // Create the table cells
     rows.selectAll('td')
-        .data(d => [d.Player + `[${d.Team}]`, d['Prob%'].toFixed(1) + '%'])
+        .data(d => [d.Player + ` [${d.Team}]`, d['Prob%'].toFixed(1) + '%'])
         .enter()
         .append('td')
         .text(d => d);

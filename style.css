@@ -19,24 +19,14 @@ text {
     justify-content: center;
 }
 
-svg {
-    width: 2000px;
-    height: 2000px;
-}
 
-.line {
+.overlay {
     fill: none;
-    stroke: steelblue;
-    stroke-width: 2px;
 }
 
-#tooltip { 
-    display: none;
-    background: #C8C8C8;
-    margin-left: 18px;
-    padding: 10px;
-    position: absolute;
-    z-index: 1000;
-    width:200px;
-    height:100px;		
+.y-axis {
+    display: block;
+    position: relative;
+    left: 30px;
 }
+
